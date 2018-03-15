@@ -1,15 +1,17 @@
-# Example values for kubernetes-dashboard-proxy.
+# Default values for kubernetes-dashboard-proxy.
 
 proxy:
   oidc:
     ## OpenID Connect discovery URL.
     #discoveryURL: https://keycloak.example.com/auth/realms/hello
+    discoveryURL:
     ## OpenID Connect client ID.
-    #clientID: kubernetes
+    clientID:
     ## OpenID Connect client secret.
-    #clientSecret: d613a5bc-176f-46fb-9584-e352cd0b1876
+    clientSecret:
     ## OpenID Connect redirect URL, typically same to Kubernetes Dashboard URL.
     #redirectURL: https://kubernetes-dashboard.example.com
+    redirectURL:
   ## Cookie encryption key. 16 or 32 bytes string. Default to 32 bytes random string.
   #cookieEncryptionKey:
   ## Kubernetes Dashboard service URL.
