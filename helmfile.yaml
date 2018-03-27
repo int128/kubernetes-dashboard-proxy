@@ -1,0 +1,19 @@
+repositories:
+  - name: int128.github.io
+    url: https://int128.github.io/helm-charts
+
+releases:
+  - name: kubernetes-dashboard-proxy
+    namespace: kube-system
+    chart: int128.github.io/kubernetes-dashboard-proxy
+    values:
+      - kubernetes-dashboard-proxy.yaml
+    set:
+      - name: proxy.oidc.discoveryURL
+        value: https://keycloak.{{ env "YOUR_DOMAIN" }}/auth/realms/{{ env "YOUR_KEYCLOAK_REALM" }}
+      - name: proxy.oidc.redirectURL
+        value: https://kubernetes-dashboard.{{ env "YOUR_DOMAIN" }}
+      - name: proxy.oidc.clientSecret
+        value: '{{ env "YOUR_CLIENT_SECRET" }}'
+      - name: ingress.hosts[0]
+        value: kubernetes-dashboard.{{ env "YOUR_DOMAIN" }}

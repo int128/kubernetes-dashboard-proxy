@@ -1,3 +1,4 @@
 /charts/*.tgz
 /charts/index.yaml
 /charts/.env*
+/.env

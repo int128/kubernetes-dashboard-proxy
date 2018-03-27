@@ -1,27 +1,40 @@
 # Kubernetes Dashboard Proxy [![CircleCI](https://circleci.com/gh/int128/kubernetes-dashboard-proxy.svg?style=shield)](https://circleci.com/gh/int128/kubernetes-dashboard-proxy)
 
-This is a Helm chart with a reverse proxy to protect the Kubernetes Dashboard with OpenID Connect (OIDC).
+This is a Helm chart with [keycloak-proxy](https://github.com/gambol99/keycloak-proxy) to protect the Kubernetes Dashboard with OpenID Connect (OIDC).
 
-This depends on [gambol99/keycloak-proxy](https://github.com/gambol99/keycloak-proxy),
-a OpenID Connect proxy written in Go.
+
+## TL;DR
+
+1. Setup your OIDC Identity Provider
+1. Configure the Kubernetes API Server allows OIDC
+1. Install Kubernetes Dashboard
+1. Install Kubernetes Dashboard Proxy
+
+You can install this using `helm` as follows:
+
+```sh
+helm repo add int128.github.io https://int128.github.io/helm-charts
+helm repo update
+helm install int128.github.io/kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
+```
 
 
 ## Getting Started
 
-You must have `kubectl` and `helm`.
+`kubectl` and `helm` are required.
 
 
 ### 1. Setup OIDC Identity Provider
 
-If you are using Keycloak, see also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-with-openid-connect-104b9e75e39c).
-
-Here it assumes you have created a OIDC client with the following:
+Setup an OIDC client with the following:
 
 - Issuer URL: `https://keycloak.example.com/auth/realms/hello`
 - Redirect URL: `https://kubernetes-dashboard.example.com/*`
 - Client ID: `kubernetes`
-- Client Secret: `Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW`
+- Client Secret: `Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW` (this is an example, usually generated random string)
 - Groups claim: `groups` (optional for group based access controll)
+
+If you are using Keycloak, see also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-with-openid-connect-104b9e75e39c).
 
 
 ### 2. Setup Kubernetes API Server
@@ -50,16 +63,11 @@ helm install stable/kubernetes-dashboard --namespace kube-system --name kubernet
 
 ### 4. Install Kubernetes Dashboard Proxy
 
-You can install a proxy from the Helm chart.
+You can install this from this Helm chart.
 
 ```sh
 helm repo add int128.github.io https://int128.github.io/helm-charts
 helm repo update
-
-# Show configuration values
-helm inspect int128.github.io/kubernetes-dashboard-proxy
-
-# Install chart
 helm install int128.github.io/kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
 ```
 
@@ -74,20 +82,13 @@ Key | Value
 `proxy.cookieEncryptionKey` | Encryption key to store a session to a browser cookie. This should be 16 or 32 bytes string. Defaults to 32 bytes random string.
 `proxy.upstreamURL` | Kubernetes Dashboard service URL. Defaults to `https://kubernetes-dashboard.kube-system.svc.cluster.local`.
 
-Here is an example configuration.
+You can install this from [helmfile.yaml](helmfile.yaml) using [helmfile](https://github.com/roboll/helmfile) as well.
 
-```yaml
-proxy:
-  oidc:
-    discoveryURL: https://keycloak.example.com/auth/realms/hello
-    clientID: kubernetes
-    clientSecret: Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
-    redirectURL: https://kubernetes-dashboard.example.com
-
-ingress:
-  enabled: true
-  hosts:
-    - kubernetes-dashboard.example.com
+```sh
+export YOUR_DOMAIN=example.com
+export YOUR_KEYCLOAK_REALM=hello
+export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+helmfile sync
 ```
 
 Now the dashboard is available via the Ingress.
