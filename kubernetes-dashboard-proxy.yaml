@@ -1,0 +1,11 @@
+proxy:
+  oidc:
+    discoveryURL: https://keycloak.example.com/auth/realms/hello
+    clientID: kubernetes
+    clientSecret: Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+    redirectURL: https://kubernetes-dashboard.example.com
+
+ingress:
+  enabled: true
+  hosts:
+    - kubernetes-dashboard.example.com
