@@ -10,15 +10,15 @@ releases:
       - name: proxy.oidc.discoveryURL
         value: '{{ env "YOUR_OIDC_DISCOVERY_URL" }}'
       - name: proxy.oidc.redirectURL
-        value: https://kubernetes-dashboard.{{ env "YOUR_DOMAIN" }}
+        value: https://{{ env "YOUR_DASHBOARD_DOMAIN" }}
       - name: proxy.oidc.clientID
-        value: kubernetes
+        value: '{{ env "YOUR_CLIENT_ID" }}'
       - name: proxy.oidc.clientSecret
         value: '{{ env "YOUR_CLIENT_SECRET" }}'
       - name: ingress.enabled
         value: true
       - name: ingress.hosts[0]
-        value: kubernetes-dashboard.{{ env "YOUR_DOMAIN" }}
+        value: '{{ env "YOUR_DASHBOARD_DOMAIN" }}'
 
   # https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard
   - name: kubernetes-dashboard

@@ -1,9 +1,16 @@
 proxy:
   oidc:
-    discoveryURL: https://keycloak.example.com/auth/realms/hello
-    clientID: kubernetes
-    clientSecret: Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
     redirectURL: https://kubernetes-dashboard.example.com
+
+    ## using Keycloak
+    #discoveryURL: https://keycloak.example.com/auth/realms/hello
+    #clientID: kubernetes
+    #clientSecret: Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+
+    ## using Google Account
+    #discoveryURL: https://accounts.google.com
+    #clientID: xxx-xxx.apps.googleusercontent.com
+    #clientSecret: Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
 
 ingress:
   enabled: true

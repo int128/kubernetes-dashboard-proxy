@@ -19,25 +19,30 @@ helm repo update
 helm install int128.github.io/kubernetes-dashboard-proxy --namespace kube-system --name kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
 ```
 
-1. Setup your OIDC Identity Provider
-1. Setup the Kubernetes API Server
-1. Install the Kubernetes Dashboard and Proxy
-1. Assign a Role
+See also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-with-openid-connect-104b9e75e39c).
 
 
 ## Getting Started
 
 ### 1. Setup your OIDC Identity Provider
 
-Setup an OIDC client as follows:
+Setup an OIDC client on your Identity Provider.
 
+#### Using Keycloak
+
+Create an OIDC client as follows:
+
+- Redirect URL: `https://kubernetes-dashboard.example.com/oauth/callback`
 - Issuer URL: `https://keycloak.example.com/auth/realms/hello`
-- Redirect URL: `https://kubernetes-dashboard.example.com/*`
 - Client ID: `kubernetes`
-- Client Secret: `Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW` (this is an example, usually generated random string)
 - Groups claim: `groups` (optional for group based access controll)
 
-If you are using Keycloak, see also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-with-openid-connect-104b9e75e39c).
+#### Using Google Account
+
+Open [Google APIs Console](https://console.developers.google.com/apis/credentials) and create an OAuth client as follows:
+
+- Application Type: Web application
+- Redirect URL: `https://kubernetes-dashboard.example.com/oauth/callback`
 
 
 ### 2. Setup the Kubernetes API Server
@@ -49,9 +54,14 @@ If you are using kops, `kops edit cluster` and append the following settings:
 ```yaml
 spec:
   kubeAPIServer:
+    # using Keycloak
+    oidcIssuerURL: https://keycloak.example.com/auth/realms/hello
     oidcClientID: kubernetes
     oidcGroupsClaim: groups
-    oidcIssuerURL: https://keycloak.example.com/auth/realms/hello
+
+    # using Google Account
+    oidcIssuerURL: https://accounts.google.com
+    oidcClientID: xxx-xxx.apps.googleusercontent.com
 ```
 
 
@@ -115,12 +125,15 @@ roleRef:
   # Consider a dedicated role in your actual operation.
   name: cluster-admin
 subjects:
-# If you want to specify the current user
+# (using Keycloak) If you want to specify the current user
 - kind: User
   name: https://keycloak.example.com/auth/realms/hello#874c4a74-faf3-45a0-bcfe-9ddf4fb802ea
-# If you want to specify the current group
+# (using Keycloak) If you want to specify the current group
 - kind: Group
   name: /admin
+# (using Google Account)
+- kind: User
+  name: https://accounts.google.com#1234567890
 ```
 
 Congratulations!
@@ -137,15 +150,23 @@ You can manage the following charts using [Helmfile](https://github.com/roboll/h
 - [Kubernetes Dashboard](https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard)
 - [Heapster](https://github.com/kubernetes/charts/tree/master/stable/heapster)
 
-Export the environment values and run `helmfile sync`.
-See [helmfile.yaml](helmfile.yaml) for details.
+Run `helmfile sync` with the environment values exported.
 
 ```sh
-export YOUR_DOMAIN=example.com
-export YOUR_OIDC_DISCOVERY_URL=https://keycloak.${YOUR_DOMAIN}/auth/realms/hello
+export YOUR_DASHBOARD_DOMAIN=kubernetes-dashboard.example.com
+
+# using Keycloak
+export YOUR_OIDC_DISCOVERY_URL=https://keycloak.example.com/auth/realms/hello
+export YOUR_CLIENT_ID=kubernetes
 export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
-helmfile sync
+
+# using Google Account
+export YOUR_OIDC_DISCOVERY_URL=https://accounts.google.com
+export YOUR_CLIENT_ID=xxx-xxx.apps.googleusercontent.com
+export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
 ```
+
+See [helmfile.yaml](helmfile.yaml) for details.
 
 
 ## Special thanks
