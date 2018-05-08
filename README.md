@@ -1,32 +1,35 @@
 # Kubernetes Dashboard Proxy [![CircleCI](https://circleci.com/gh/int128/kubernetes-dashboard-proxy.svg?style=shield)](https://circleci.com/gh/int128/kubernetes-dashboard-proxy)
 
-This is a Helm chart with [keycloak-proxy](https://github.com/gambol99/keycloak-proxy) to protect the Kubernetes Dashboard with OpenID Connect (OIDC).
+A Helm chart with [keycloak-proxy](https://github.com/gambol99/keycloak-proxy) to protect the Kubernetes Dashboard with OpenID Connect (OIDC).
+
+![diagram.png](diagram.png)
 
 
 ## TL;DR
 
-1. Setup your OIDC Identity Provider
-1. Configure the Kubernetes API Server allows OIDC
-1. Install Kubernetes Dashboard
-1. Install Kubernetes Dashboard Proxy
-
-You can install this using `helm` as follows:
+You can install the charts as follows:
 
 ```sh
+# Kubernetes Dashboard
+helm install stable/kubernetes-dashboard --namespace kube-system --name kubernetes-dashboard
+
+# Kubernetes Dashboard Proxy
 helm repo add int128.github.io https://int128.github.io/helm-charts
 helm repo update
-helm install int128.github.io/kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
+helm install int128.github.io/kubernetes-dashboard-proxy --namespace kube-system --name kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
 ```
+
+1. Setup your OIDC Identity Provider
+1. Setup the Kubernetes API Server
+1. Install the Kubernetes Dashboard and Proxy
+1. Assign Role
 
 
 ## Getting Started
 
-`kubectl` and `helm` are required.
+### 1. Setup your OIDC Identity Provider
 
-
-### 1. Setup OIDC Identity Provider
-
-Setup an OIDC client with the following:
+Setup an OIDC client as follows:
 
 - Issuer URL: `https://keycloak.example.com/auth/realms/hello`
 - Redirect URL: `https://kubernetes-dashboard.example.com/*`
@@ -37,9 +40,9 @@ Setup an OIDC client with the following:
 If you are using Keycloak, see also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-with-openid-connect-104b9e75e39c).
 
 
-### 2. Setup Kubernetes API Server
+### 2. Setup the Kubernetes API Server
 
-Configure the kube-apiserver accepts an OIDC ID token.
+Setup the Kubernetes API Server accepts an OIDC ID token.
 
 If you are using kops, `kops edit cluster` and append the following settings:
 
@@ -52,60 +55,51 @@ spec:
 ```
 
 
-### 3. Install Kubernetes Dashboard
+### 3. Install the Kubernetes Dashboard and Proxy
 
-You can install a dashboard from [the Helm chart](https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard).
+You can install [the Kubernetes Dashboard](https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard) as follows:
 
 ```sh
 helm install stable/kubernetes-dashboard --namespace kube-system --name kubernetes-dashboard
 ```
 
-
-### 4. Install Kubernetes Dashboard Proxy
-
-You can install this from this Helm chart.
+You can install the Kubernetes Dashboard Proxy as follows:
 
 ```sh
 helm repo add int128.github.io https://int128.github.io/helm-charts
 helm repo update
-helm install int128.github.io/kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
+helm install int128.github.io/kubernetes-dashboard-proxy --namespace kube-system --name kubernetes-dashboard-proxy -f kubernetes-dashboard-proxy.yaml
 ```
 
-You can specify the following values.
+You can set the following values for the Kubernetes Dashboard Proxy.
+See also [kubernetes-dashboard-proxy.yaml](kubernetes-dashboard-proxy.yaml).
 
-Key | Value
-----|------
-`proxy.oidc.discoveryURL` | Discovery URL.
-`proxy.oidc.clientID` | Client ID.
-`proxy.oidc.clientSecret` | Client secret.
-`proxy.oidc.redirectURL` | Redirect URL. This may be same to the external URL in most cases.
-`proxy.cookieEncryptionKey` | Encryption key to store a session to a browser cookie. This should be 16 or 32 bytes string. Defaults to 32 bytes random string.
-`proxy.upstreamURL` | Kubernetes Dashboard service URL. Defaults to `https://kubernetes-dashboard.kube-system.svc.cluster.local`.
+Parameter | Description | Default
+----------|-------------|--------
+`proxy.oidc.discoveryURL` | Discovery URL. | (mandatory)
+`proxy.oidc.clientID` | Client ID. | (mandatory)
+`proxy.oidc.clientSecret` | Client secret. | (mandatory)
+`proxy.oidc.redirectURL` | Redirect URL. This may be same to the external URL in most cases. | (mandatory)
+`proxy.cookieEncryptionKey` | Encryption key to store a session to a browser cookie. This should be 16 or 32 bytes string. | 32 bytes random string
+`proxy.upstreamURL` | Kubernetes Dashboard service URL. | `https://kubernetes-dashboard.kube-system.svc.cluster.local`.
+`ingress.enabled` | Enable ingress controller resource. | `false`
+`ingress.hosts` | Hostnames | `[]`
 
-You can install this from [helmfile.yaml](helmfile.yaml) using [helmfile](https://github.com/roboll/helmfile) as well.
-
-```sh
-export YOUR_DOMAIN=example.com
-export YOUR_KEYCLOAK_REALM=hello
-export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
-helmfile sync
-```
-
-Now the dashboard is available via the Ingress.
+#### nginx-ingress
 
 If you are using [nginx-ingress](https://github.com/kubernetes/ingress-nginx), make sure `proxy_buffer_size` option is larger than 4kB.
-You can configure that by the ConfigMap.
+You can set it in the ConfigMap of nginx-ingress.
 
 ```yaml
     proxy-buffer-size: "64k"
 ```
 
 
-### 5. Assign a role
+### 4. Assign a role
 
-Open the dashboard by `https://kubernetes-dashboard.example.com`.
+Open `https://kubernetes-dashboard.example.com`.
 
-Since no role is given to the current user or group, an Unauthorized warning may be shown on the dashboard.
+At this time, an `Unauthorized` error may appear on the dashboard because you have no role.
 
 Here assign the `cluster-admin` role to the current group.
 
@@ -117,6 +111,8 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
+  # NOTE: This is a super administrator and can do everything.
+  # Consider a dedicated role in your actual operation.
   name: cluster-admin
 subjects:
 # If you want to specify the current user
@@ -127,10 +123,22 @@ subjects:
   name: /admin
 ```
 
-Now all objects are shown in the dashboard.
+Congratulations!
+Now all objects should appear in the dashboard.
 
-Note that the `cluster-admin` role is a super administrator and can do everything.
-Consider a dedicated role in your actual operation.
+
+## Advanced
+
+### Use Helmfile
+
+You can install this chart from [helmfile.yaml](helmfile.yaml) using [helmfile](https://github.com/roboll/helmfile) as well.
+
+```sh
+export YOUR_DOMAIN=example.com
+export YOUR_KEYCLOAK_REALM=hello
+export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+helmfile sync
+```
 
 
 ## Special thanks
