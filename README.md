@@ -22,7 +22,7 @@ helm install int128.github.io/kubernetes-dashboard-proxy --namespace kube-system
 1. Setup your OIDC Identity Provider
 1. Setup the Kubernetes API Server
 1. Install the Kubernetes Dashboard and Proxy
-1. Assign Role
+1. Assign a Role
 
 
 ## Getting Started
@@ -129,13 +129,20 @@ Now all objects should appear in the dashboard.
 
 ## Advanced
 
-### Use Helmfile
+### Manage the charts using Helmfile
 
-You can install this chart from [helmfile.yaml](helmfile.yaml) using [helmfile](https://github.com/roboll/helmfile) as well.
+You can manage the following charts using [Helmfile](https://github.com/roboll/helmfile).
+
+- Kubernetes Dashboard Proxy
+- [Kubernetes Dashboard](https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard)
+- [Heapster](https://github.com/kubernetes/charts/tree/master/stable/heapster)
+
+Export the environment values and run `helmfile sync`.
+See [helmfile.yaml](helmfile.yaml) for details.
 
 ```sh
 export YOUR_DOMAIN=example.com
-export YOUR_KEYCLOAK_REALM=hello
+export YOUR_OIDC_DISCOVERY_URL=https://keycloak.${YOUR_DOMAIN}/auth/realms/hello
 export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
 helmfile sync
 ```
