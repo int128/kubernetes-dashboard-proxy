@@ -8,17 +8,17 @@ releases:
     chart: int128.github.io/kubernetes-dashboard-proxy
     set:
       - name: proxy.oidc.discoveryURL
-        value: '{{ env "YOUR_OIDC_DISCOVERY_URL" }}'
+        value: '{{ env "KUBE_OIDC_DISCOVERY_URL" }}'
       - name: proxy.oidc.redirectURL
-        value: https://{{ env "YOUR_DASHBOARD_DOMAIN" }}
+        value: https://{{ env "KUBE_DASHBOARD_DOMAIN" }}
       - name: proxy.oidc.clientID
-        value: '{{ env "YOUR_CLIENT_ID" }}'
+        value: '{{ env "KUBE_OIDC_CLIENT_ID" }}'
       - name: proxy.oidc.clientSecret
-        value: '{{ env "YOUR_CLIENT_SECRET" }}'
+        value: '{{ env "KUBE_OIDC_CLIENT_SECRET" }}'
       - name: ingress.enabled
         value: true
       - name: ingress.hosts[0]
-        value: '{{ env "YOUR_DASHBOARD_DOMAIN" }}'
+        value: '{{ env "KUBE_DASHBOARD_DOMAIN" }}'
 
   # https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard
   - name: kubernetes-dashboard

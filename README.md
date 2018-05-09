@@ -153,17 +153,17 @@ You can manage the following charts using [Helmfile](https://github.com/roboll/h
 Run `helmfile sync` with the environment values exported.
 
 ```sh
-export YOUR_DASHBOARD_DOMAIN=kubernetes-dashboard.example.com
+export KUBE_DASHBOARD_DOMAIN=kubernetes-dashboard.example.com
 
 # using Keycloak
-export YOUR_OIDC_DISCOVERY_URL=https://keycloak.example.com/auth/realms/hello
-export YOUR_CLIENT_ID=kubernetes
-export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+export KUBE_OIDC_DISCOVERY_URL=https://keycloak.example.com/auth/realms/hello
+export KUBE_OIDC_CLIENT_ID=kubernetes
+export KUBE_OIDC_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
 
 # using Google Account
-export YOUR_OIDC_DISCOVERY_URL=https://accounts.google.com
-export YOUR_CLIENT_ID=xxx-xxx.apps.googleusercontent.com
-export YOUR_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
+export KUBE_OIDC_DISCOVERY_URL=https://accounts.google.com
+export KUBE_OIDC_CLIENT_ID=xxx-xxx.apps.googleusercontent.com
+export KUBE_OIDC_CLIENT_SECRET=Mx3xL96Ixn7j4ddWOCH1l8VkB6fiXDBW
 ```
 
 See [helmfile.yaml](helmfile.yaml) for details.
