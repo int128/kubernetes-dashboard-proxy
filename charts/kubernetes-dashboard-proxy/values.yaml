@@ -18,30 +18,29 @@ proxy:
   upstreamURL: https://kubernetes-dashboard.kube-system.svc.cluster.local
 
 replicaCount: 1
+
 image:
   repository: quay.io/gambol99/keycloak-proxy
   tag: v2.1.1
   pullPolicy: IfNotPresent
 
 service:
-  name: kubernetes-dashboard-proxy
   type: ClusterIP
-  externalPort: 80
-  internalPort: 3000
+  port: 80
 
 ingress:
   enabled: false
-  # Used to create an Ingress record.
-  hosts:
-    - kubernetes-dashboard.example.com
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  tls:
-    # Secrets must be manually created in the namespace.
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
+  path: /
+  hosts:
+    - kubernetes-dashboard.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -53,3 +52,9 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,14 +1,18 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard-proxy.fullname" . }}
   labels:
     app: {{ template "kubernetes-dashboard-proxy.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "kubernetes-dashboard-proxy.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kubernetes-dashboard-proxy.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -20,7 +24,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - "--listen=0.0.0.0:{{ .Values.service.internalPort }}"
+            - "--listen=0.0.0.0:3000"
             - "--discovery-url={{ .Values.proxy.oidc.discoveryURL }}"
             - "--client-id={{ .Values.proxy.oidc.clientID }}"
             - "--client-secret={{ .Values.proxy.oidc.clientSecret }}"
@@ -34,22 +38,32 @@ spec:
             - "--upstream-url={{ .Values.proxy.upstreamURL }}"
             - "--resources=uri=/*"
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: http
+              containerPort: 3000
+              protocol: TCP
           livenessProbe:
             httpGet:
+              port: http
               path: /oauth/health
-              port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 3
-            timeoutSeconds: 2
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
+              port: http
               path: /oauth/health
-              port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 3
-            timeoutSeconds: 2
+            timeoutSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}
