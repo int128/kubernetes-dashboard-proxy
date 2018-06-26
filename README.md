@@ -94,6 +94,8 @@ Parameter | Description | Default
 `proxy.upstreamURL` | Kubernetes Dashboard service URL. | `https://kubernetes-dashboard.kube-system.svc.cluster.local`.
 `ingress.enabled` | Enable ingress controller resource. | `false`
 `ingress.hosts` | Hostnames | `[]`
+`resources.limits` | Pod resource limits. | `{}`
+`resources.requests` | Pod resource requests. | `{}`
 
 #### nginx-ingress
 
