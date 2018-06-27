@@ -23,19 +23,30 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PROXY_LISTEN
+              value: 0.0.0.0:3000
+            - name: PROXY_DISCOVERY_URL
+              value: {{ .Values.proxy.oidc.discoveryURL | quote }}
+            - name: PROXY_CLIENT_ID
+              value: {{ .Values.proxy.oidc.clientID | quote }}
+            - name: PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kubernetes-dashboard-proxy.fullname" . }}
+                  key: clientSecret
+            - name: PROXY_REDIRECTION_URL
+              value: {{ .Values.proxy.oidc.redirectURL | quote }}
+            - name: PROXY_ENABLE_REFRESH_TOKEN
+              value: "true"
+            - name: PROXY_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kubernetes-dashboard-proxy.fullname" . }}
+                  key: cookieEncryptionKey
+            - name: PROXY_UPSTREAM_URL
+              value: {{ .Values.proxy.upstreamURL | quote }}
           args:
-            - "--listen=0.0.0.0:3000"
-            - "--discovery-url={{ .Values.proxy.oidc.discoveryURL }}"
-            - "--client-id={{ .Values.proxy.oidc.clientID }}"
-            - "--client-secret={{ .Values.proxy.oidc.clientSecret }}"
-            - "--redirection-url={{ .Values.proxy.oidc.redirectURL }}"
-            - "--enable-refresh-tokens=true"
-{{- if .Values.proxy.cookieEncryptionKey }}
-            - "--encryption-key={{ .Values.proxy.cookieEncryptionKey }}"
-{{- else }}
-            - "--encryption-key={{ randAlphaNum 32 }}"
-{{- end }}
-            - "--upstream-url={{ .Values.proxy.upstreamURL }}"
             - "--resources=uri=/*"
           ports:
             - name: http

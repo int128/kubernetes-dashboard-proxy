@@ -5,7 +5,8 @@ repositories:
 releases:
   - name: kubernetes-dashboard-proxy
     namespace: kube-system
-    chart: int128.github.io/kubernetes-dashboard-proxy
+    #chart: int128.github.io/kubernetes-dashboard-proxy
+    chart: ./charts/kubernetes-dashboard-proxy
     values:
       - proxy:
           oidc:

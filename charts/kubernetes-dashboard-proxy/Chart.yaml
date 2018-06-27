@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A reverse proxy with OpenID Connect for Kubernetes Dashboard
 name: kubernetes-dashboard-proxy
-version: 1.1.0
+version: 1.2.0
