@@ -4,14 +4,14 @@ proxy:
   oidc:
     ## OpenID Connect discovery URL.
     #discoveryURL: https://keycloak.example.com/auth/realms/hello
-    discoveryURL:
+    discoveryURL: ""
     ## OpenID Connect client ID.
-    clientID:
+    clientID: ""
     ## OpenID Connect client secret.
-    clientSecret:
+    clientSecret: ""
     ## OpenID Connect redirect URL, typically same to Kubernetes Dashboard URL.
     #redirectURL: https://kubernetes-dashboard.example.com
-    redirectURL:
+    redirectURL: ""
   ## Cookie encryption key. 16 or 32 bytes string. Default to 32 bytes random string.
   #cookieEncryptionKey:
   ## Kubernetes Dashboard service URL.
