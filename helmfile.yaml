@@ -33,6 +33,3 @@ releases:
   - name: heapster
     namespace: kube-system
     chart: stable/heapster
-    values:
-      - rbac:
-          create: true
