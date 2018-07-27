@@ -20,9 +20,9 @@ releases:
             - '{{ requiredEnv "KUBE_DASHBOARD_DOMAIN" }}'
         resources:
           limits:
-            memory: 128Mi
+            memory: 32Mi
           requests:
-            memory: 128Mi
+            memory: 32Mi
 
   # https://github.com/kubernetes/charts/tree/master/stable/kubernetes-dashboard
   - name: kubernetes-dashboard
