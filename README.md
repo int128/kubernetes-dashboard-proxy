@@ -173,6 +173,8 @@ Parameter | Description | Default
 `proxy.oidc.redirectURL` | Redirect URL. This may be same to the external URL in most cases. | (mandatory)
 `proxy.cookieEncryptionKey` | Encryption key to store a session to a browser cookie. This should be 16 or 32 bytes string. | 32 bytes random string
 `proxy.upstreamURL` | Kubernetes Dashboard service URL. | `https://kubernetes-dashboard.kube-system.svc.cluster.local`.
+`proxy.enableAuthorizationHeader` | Add the authorization header to the proxy request. | `true`
+`proxy.enableAuthorizationCookies` | Add the authorization cookies to the uptream proxy request. | `false`
 `ingress.enabled` | Enable ingress controller resource. | `false`
 `ingress.hosts` | Hostnames | `[]`
 `resources.limits` | Pod resource limits. | `{}`

@@ -46,6 +46,10 @@ spec:
                   key: cookieEncryptionKey
             - name: PROXY_UPSTREAM_URL
               value: {{ .Values.proxy.upstreamURL | quote }}
+            - name: PROXY_ENABLE_AUTHORIZATION_HEADER
+              value: {{ .Values.proxy.enableAuthorizationHeader | quote }}
+            - name: PROXY_ENABLE_AUTHORIZATION_COOKIES
+              value: {{ .Values.proxy.enableAuthorizationCookies | quote }}
           args:
             - "--resources=uri=/*"
           ports:

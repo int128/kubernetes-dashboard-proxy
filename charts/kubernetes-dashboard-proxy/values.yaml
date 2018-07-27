@@ -1,4 +1,5 @@
 # Default values for kubernetes-dashboard-proxy.
+# See also https://github.com/gambol99/keycloak-proxy
 
 proxy:
   oidc:
@@ -16,6 +17,10 @@ proxy:
   #cookieEncryptionKey:
   ## Kubernetes Dashboard service URL.
   upstreamURL: https://kubernetes-dashboard.kube-system.svc.cluster.local
+  ## Add the authorization header to the proxy request.
+  enableAuthorizationHeader: true
+  ## Add the authorization cookies to the uptream proxy request.
+  enableAuthorizationCookies: false
 
 replicaCount: 1
 
