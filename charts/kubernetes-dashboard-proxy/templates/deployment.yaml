@@ -52,6 +52,9 @@ spec:
               value: {{ .Values.proxy.enableAuthorizationCookies | quote }}
           args:
             - "--resources=uri=/*"
+          {{- if .Values.proxy.oidc.scopes }}
+            - "--scopes={{ .Values.proxy.oidc.scopes }}"
+          {{- end }}
           ports:
             - name: http
               containerPort: 3000

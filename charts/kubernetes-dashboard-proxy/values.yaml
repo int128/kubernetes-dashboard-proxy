@@ -13,6 +13,9 @@ proxy:
     ## OpenID Connect redirect URL, typically same to Kubernetes Dashboard URL.
     #redirectURL: https://kubernetes-dashboard.example.com
     redirectURL: ""
+    ## OpenID Connect list of scopes requested when authenticating the user.
+    ## Example: scopes: groups
+    #scopes: ""
   ## Cookie encryption key. 16 or 32 bytes string. Default to 32 bytes random string.
   #cookieEncryptionKey:
   ## Kubernetes Dashboard service URL.
