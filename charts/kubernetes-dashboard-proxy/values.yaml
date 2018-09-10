@@ -29,7 +29,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/gambol99/keycloak-proxy
-  tag: v2.2.2
+  tag: v2.3.0
   pullPolicy: IfNotPresent
 
 service:
