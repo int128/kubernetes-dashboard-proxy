@@ -55,6 +55,9 @@ spec:
           {{- if .Values.proxy.oidc.scopes }}
             - "--scopes={{ .Values.proxy.oidc.scopes }}"
           {{- end }}
+          {{- with .Values.proxy.extraArgs }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 3000
