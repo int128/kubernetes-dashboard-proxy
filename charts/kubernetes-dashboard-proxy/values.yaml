@@ -24,6 +24,10 @@ proxy:
   enableAuthorizationHeader: true
   ## Add the authorization cookies to the uptream proxy request.
   enableAuthorizationCookies: false
+  ## Extra argumets for keycloak-proxy
+  extraArgs: []
+  #  - --skip-openid-provider-tls-verify
+  #  - --scopes=groups
 
 replicaCount: 1
 
