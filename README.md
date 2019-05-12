@@ -28,12 +28,26 @@ See also [this article](https://medium.com/@int128/protect-kubernetes-dashboard-
 
 Create an OIDC client as follows:
 
+- Client ID: `kubernetes`
 - Redirect URL: `https://kubernetes-dashboard.example.com/oauth/callback`
 - Issuer URL: `https://keycloak.example.com/auth/realms/YOUR_REALM`
-- Client ID: `kubernetes`
-- Groups claim: `groups`
 
-Then create a group `kubernetes:admin` and join to it.
+You need to add the following mapper to include an `aud` claim ([#8954](https://issues.jboss.org/browse/KEYCLOAK-8954):
+
+- Name: `aud`
+- Mapper Type: `Audience`
+- Included Client Audience: `kubernetes`
+
+You can associate client roles by adding the following mapper:
+
+- Name: `groups`
+- Mapper Type: `User Client Role`
+- Client ID: `kubernetes`
+- Client Role prefix: `kubernetes:`
+- Token Claim Name: `groups`
+- Add to ID token: on
+
+For example, if you have the `admin` role of the client, you will get a JWT with the claim `{"groups": ["kubernetes:admin"]}`.
 
 ### 2. Setup Kubernetes API Server
 
@@ -89,7 +103,7 @@ roleRef:
   name: cluster-admin
 subjects:
 - kind: Group
-  name: /kubernetes:admin
+  name: kubernetes:admin
 ```
 
 Now all objects should appear in the dashboard.
