@@ -1,5 +1,11 @@
 # Kubernetes Dashboard Proxy [![CircleCI](https://circleci.com/gh/int128/kubernetes-dashboard-proxy.svg?style=shield)](https://circleci.com/gh/int128/kubernetes-dashboard-proxy)
 
+**DEPRECATED**: This chart has been deprecated. Please use a keycloak-gatekeeper chart, e.g. [gabibbo97/keycloak-gatekeeper](https://hub.helm.sh/charts/gabibbo97/keycloak-gatekeeper).
+
+
+
+----
+
 A Helm chart with [keycloak-proxy](https://github.com/gambol99/keycloak-proxy) to protect the Kubernetes Dashboard with OpenID Connect (OIDC) authentication.
 
 ![diagram.png](diagram.png)
