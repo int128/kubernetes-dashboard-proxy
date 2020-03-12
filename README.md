@@ -1,7 +1,9 @@
 # Kubernetes Dashboard Proxy [![CircleCI](https://circleci.com/gh/int128/kubernetes-dashboard-proxy.svg?style=shield)](https://circleci.com/gh/int128/kubernetes-dashboard-proxy)
 
-**DEPRECATED**: This chart has been deprecated. Please use a keycloak-gatekeeper chart, e.g. [gabibbo97/keycloak-gatekeeper](https://hub.helm.sh/charts/gabibbo97/keycloak-gatekeeper).
+**DEPRECATED**: This chart has been deprecated.
 
+- You can expose Kubernetes Dashboard using a keycloak-gatekeeper chart, e.g. [gabibbo97/keycloak-gatekeeper](https://hub.helm.sh/charts/gabibbo97/keycloak-gatekeeper).
+- You can access Kubernetes Dashboard via a local proxy, e.g. [int128/kauthproxy](https://github.com/int128/kauthproxy).
 
 
 ----
